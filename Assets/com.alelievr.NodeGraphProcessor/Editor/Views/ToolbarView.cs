@@ -101,11 +101,11 @@ namespace GraphProcessor
 			((left) ? leftButtonDatas : rightButtonDatas).Add(new ToolbarButtonData{ type = ElementType.FlexibleSpace });
 		}
 
-		protected void AddSearchField(string name, bool defaultValue, Action<string> callback, bool left = true)
+		protected void AddSearchField(string name, bool defaultValue, Action<string> callback, bool left = true, string defaulSearchString = "")
 		{
 			var data = new ToolbarButtonData{
 				type = ElementType.SearchField,
-				searchString = "",
+				searchString = defaulSearchString,
 				stringCallback = callback,
 			};
 
