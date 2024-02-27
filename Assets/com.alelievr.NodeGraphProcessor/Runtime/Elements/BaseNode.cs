@@ -22,12 +22,12 @@ namespace GraphProcessor
 		/// </summary>
 		/// <returns></returns>
 		public virtual string       name => GetType().Name;
-		
+
 		/// <summary>
 		/// The accent color of the node
 		/// </summary>
 		public virtual Color color => Color.clear;
-		
+
 		/// <summary>
 		/// Set a custom uss file for the node. We use a Resources.Load to get the stylesheet so be sure to put the correct resources path
 		/// https://docs.unity3d.com/ScriptReference/Resources.Load.html
@@ -37,12 +37,12 @@ namespace GraphProcessor
 		/// <summary>
 		/// If the node can be locked or not
 		/// </summary>
-        public virtual bool         unlockable => true; 
+        public virtual bool         unlockable => true;
 
 		/// <summary>
 		/// Is the node is locked (if locked it can't be moved)
 		/// </summary>
-        public virtual bool         isLocked => nodeLock; 
+        public virtual bool         isLocked => nodeLock;
 
         //id
         public string				GUID;
@@ -125,7 +125,7 @@ namespace GraphProcessor
 		public bool					createdFromDuplication {get; internal set; } = false;
 
 		/// <summary>
-		/// True only when the node was created from a duplicate operation and is inside a group that was also duplicated at the same time. 
+		/// True only when the node was created from a duplicate operation and is inside a group that was also duplicated at the same time.
 		/// </summary>
 		public bool					createdWithinGroup {get; internal set; } = false;
 
@@ -455,7 +455,7 @@ namespace GraphProcessor
 
 			if (customPortTypeBehaviorMap.ContainsKey(info.info.FieldType))
 				return true;
-			
+
 			return false;
 		}
 
@@ -472,7 +472,7 @@ namespace GraphProcessor
 
 			fieldsToUpdate.Push(new PortUpdate{fieldNames = new List<string>(){fieldName}, node = this});
 
-			// Iterate through all the ports that needs to be updated, following graph connection when the 
+			// Iterate through all the ports that needs to be updated, following graph connection when the
 			// port is updated. This is required ton have type propagation multiple nodes that changes port types
 			// are connected to each other (i.e. the relay node)
 			while (fieldsToUpdate.Count != 0)
@@ -593,7 +593,7 @@ namespace GraphProcessor
 
 		#region Events and Processing
 
-		public void OnEdgeConnected(SerializableEdge edge)
+		public virtual void OnEdgeConnected(SerializableEdge edge)
 		{
 			bool input = edge.inputNode == this;
 			NodePortContainer portCollection = (input) ? (NodePortContainer)inputPorts : outputPorts;
@@ -607,7 +607,7 @@ namespace GraphProcessor
 
 		protected virtual bool CanResetPort(NodePort port) => true;
 
-		public void OnEdgeDisconnected(SerializableEdge edge)
+		public virtual void OnEdgeDisconnected(SerializableEdge edge)
 		{
 			if (edge == null)
 				return ;
@@ -751,7 +751,7 @@ namespace GraphProcessor
 
 				if (condition(node))
 					return node;
-				
+
 				foreach (var dep in node.GetInputNodes())
 					dependencies.Push(dep);
 			}
@@ -858,7 +858,7 @@ namespace GraphProcessor
 		/// Get the name of the node. If the node have a custom name (set using the UI by double clicking on the node title) then it will return this name first, otherwise it returns the value of the name field.
 		/// </summary>
 		/// <returns>The name of the node as written in the title</returns>
-		public string GetCustomName() => String.IsNullOrEmpty(nodeCustomName) ? name : nodeCustomName; 
+		public string GetCustomName() => String.IsNullOrEmpty(nodeCustomName) ? name : nodeCustomName;
 
 		#endregion
 	}

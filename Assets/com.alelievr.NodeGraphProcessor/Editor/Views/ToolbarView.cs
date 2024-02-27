@@ -22,6 +22,7 @@ namespace GraphProcessor
 			Separator,
 			Custom,
 			FlexibleSpace,
+			SearchField,
 		}
 
 		protected class ToolbarButtonData
@@ -32,12 +33,15 @@ namespace GraphProcessor
 			public bool				visible = true;
 			public Action			buttonCallback;
 			public Action< bool >	toggleCallback;
+			public Action< string >	stringCallback;
 			public int				size;
 			public Action			customDrawFunction;
+			public string			searchString;
 		}
 
 		List< ToolbarButtonData >	leftButtonDatas = new List< ToolbarButtonData >();
 		List< ToolbarButtonData >	rightButtonDatas = new List< ToolbarButtonData >();
+		protected List< ToolbarButtonData > RightButtonData {get { return rightButtonDatas;}}
 		protected BaseGraphView		graphView;
 		
 		ToolbarButtonData showProcessor;
@@ -95,6 +99,18 @@ namespace GraphProcessor
 		protected void AddFlexibleSpace(bool left = true)
 		{
 			((left) ? leftButtonDatas : rightButtonDatas).Add(new ToolbarButtonData{ type = ElementType.FlexibleSpace });
+		}
+
+		protected void AddSearchField(string name, bool defaultValue, Action<string> callback, bool left = true)
+		{
+			var data = new ToolbarButtonData{
+				type = ElementType.SearchField,
+				searchString = "",
+				stringCallback = callback,
+			};
+
+	
+			((left) ? leftButtonDatas : rightButtonDatas).Add(data);
 		}
 
 		protected ToolbarButtonData AddToggle(string name, bool defaultValue, Action< bool > callback, bool left = true)
@@ -214,6 +230,18 @@ namespace GraphProcessor
 						break;
 					case ElementType.FlexibleSpace:
 						GUILayout.FlexibleSpace();
+						break;
+					case ElementType.SearchField:
+						button.searchString = GUILayout.TextField(button.searchString, GUILayout.Width(150));
+						if (GUILayout.Button("Search"))
+						{
+							// Remove focus if cleared
+							if(button.searchString != "")
+							{
+								button.stringCallback.Invoke(button.searchString);
+								GUI.FocusControl(null);
+							}
+						}
 						break;
 				}
 			}
